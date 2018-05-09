@@ -1,0 +1,13 @@
+<h1>Usuarios</h1>
+
+<div *ngFor="let user of items | async" class="card">
+  <item-detail [item]='user'></item-detail>
+</div>
+
+<loading-spinner *ngIf="showSpinner"></loading-spinner>
+
+<button type="button" class="button is-danger" (click)='deleteItems()'>Delete Entire List</button>
+
+<hr>
+
+<item-form></item-form>

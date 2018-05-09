@@ -3,18 +3,12 @@ import { Router } from '@angular/router';
 
 import * as firebase from 'firebase/app';
 import { AngularFireAuth } from 'angularfire2/auth';
-import { AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { NotifyService } from './notify.service';
 
 import { Observable } from 'rxjs/Observable';
 import { switchMap } from 'rxjs/operators';
-
-interface User {
-  uid: string;
-  email?: string | null;
-  photoURL?: string;
-  displayName?: string;
-}
+import { User } from '../user';
+import { AngularFireDatabase, AngularFireObject } from 'angularfire2/database';
 
 @Injectable()
 export class AuthService {
@@ -22,14 +16,14 @@ export class AuthService {
   user: Observable<User | null>;
 
   constructor(private afAuth: AngularFireAuth,
-              private afs: AngularFirestore,
+              private afs: AngularFireDatabase,
               private router: Router,
               private notify: NotifyService) {
 
     this.user = this.afAuth.authState
       .switchMap((user) => {
         if (user) {
-          return this.afs.doc<User>(`users/${user.uid}`).valueChanges();
+          return this.afs.object<User>(`users/${user.uid}`).valueChanges();
         } else {
           return Observable.of(null);
         }
@@ -126,14 +120,9 @@ export class AuthService {
   // Sets user data to firestore after succesful login
   private updateUserData(user: User) {
 
-    const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
+    const userRef: AngularFireObject<User> = this.afs.object(`users/${user.uid}`);
 
-    const data: User = {
-      uid: user.uid,
-      email: user.email || null,
-      displayName: user.displayName || 'nameless user',
-      photoURL: user.photoURL || 'https://goo.gl/Fz9nrQ',
-    };
+    const data = new User(user.uid, user.email || '', user.photoURL || 'https://goo.gl/Fz9nrQ', user.displayName || 'nameless user');
     return userRef.set(data);
   }
 }

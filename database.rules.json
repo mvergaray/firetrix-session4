@@ -1,19 +1,10 @@
 {
   "rules": {
-    ".read": true,
-    ".write": false,
-
-    "uploads": {
-      ".write": "auth != null"
-    },
-   "items": {
-      ".write": "auth != null"
-    },
+    ".read": "root.child('users').child(auth.uid).child('roles/reader').val() === true",
+    ".write": "root.child('users').child(auth.uid).child('roles/admin').val() === true",
     "users": {
-      ".write": "auth != null"
+      ".read": true,
+      ".write": true
     }
-
-
-
   }
 }

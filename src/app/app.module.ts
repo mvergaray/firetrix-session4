@@ -24,6 +24,7 @@ import { environment } from '../environments/environment';
 import { AngularFireModule } from 'angularfire2';
 export const firebaseConfig = environment.firebaseConfig;
 import { AngularFirestoreModule } from 'angularfire2/firestore';
+import { UsersModule } from './users/shared/users.module';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { AngularFirestoreModule } from 'angularfire2/firestore';
     CoreModule,
     SharedModule,
     ItemModule,
+    UsersModule,
     UiModule,
     AngularFireModule.initializeApp(firebaseConfig),
   ],
